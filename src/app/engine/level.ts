@@ -109,21 +109,7 @@ function runGameLoop(gameOptions: GameOptions): void {
     return;
   }
 
-  const ctx: GameContext = {
-    ...createGameContext(gameOptions),
-    levelId: gameOptions.level.levelId,
-    maxOffset: getMaxOffset(gameOptions.level),
-    width: gameOptions.canvas.width,
-    height: gameOptions.canvas.height,
-    delta: gameOptions.formerTimeStamp
-      ? (gameOptions.timeStamp - gameOptions.formerTimeStamp) / gameOptions.speed
-      : 0,
-    beaten: false,
-    fellOff: false,
-    movedVertically: false,
-    renderX: 0,
-    scrollOffset: 0,
-  };
+  const ctx: GameContext = buildContext(gameOptions);
 
   moveHero(ctx);
   moveGumbas(ctx);
@@ -153,6 +139,24 @@ function runGameLoop(gameOptions: GameOptions): void {
       timeStamp: newTimeStamp,
     });
   });
+}
+
+function buildContext(gameOptions: GameOptions): GameContext {
+  return {
+    ...createGameContext(gameOptions),
+    levelId: gameOptions.level.levelId,
+    maxOffset: getMaxOffset(gameOptions.level),
+    width: gameOptions.canvas.width,
+    height: gameOptions.canvas.height,
+    delta: gameOptions.formerTimeStamp
+      ? (gameOptions.timeStamp - gameOptions.formerTimeStamp) / gameOptions.speed
+      : 0,
+    beaten: false,
+    fellOff: false,
+    movedVertically: false,
+    renderX: 0,
+    scrollOffset: 0,
+  };
 }
 
 function getInitialState(): {
