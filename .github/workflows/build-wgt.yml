@@ -1,0 +1,33 @@
+name: Build Tizen WGT
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-wgt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t ngmario-tizen .
+
+      - name: Extract WGT from image
+        run: |
+          container_id=$(docker create ngmario-tizen)
+          docker cp "$container_id":/home/mario/NgMario.wgt ./NgMario.wgt
+          docker rm "$container_id"
+
+      - name: Verify WGT
+        run: |
+          ls -lh NgMario.wgt
+          file NgMario.wgt
+
+      - name: Upload WGT artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NgMario-wgt
+          path: NgMario.wgt
+          if-no-files-found: error
