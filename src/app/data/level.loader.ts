@@ -1,46 +1,30 @@
-import { httpResource, HttpResourceRef } from '@angular/common/http';
+import { resource, ResourceRef } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { Level } from '../engine/level';
 import { initLevel } from './init-level';
 import { initLevelOverview, LevelOverview } from './level-info';
+import { embeddedAssets } from './embedded-assets';
 
 @Injectable({ providedIn: 'root' })
 export class LevelLoader {
   
-  getLevelResource(levelKey: () => string | undefined): HttpResourceRef<Level> {
+  getLevelResource(levelKey: () => string | undefined): ResourceRef<Level> {
     
-    return httpResource<Level>(
-      () => (!levelKey() ? undefined : `/levels/${levelKey()}.json`),
-      {
-        defaultValue: initLevel,
-        parse: raw => toLevel(raw), // zod
-      }
-    );
+    return resource({
+      params: levelKey,
+      loader: ({ params }) => {
+        const raw = embeddedAssets.levels[params];
+        return Promise.resolve(raw ? toLevel(raw) : initLevel);
+      },
+      defaultValue: initLevel,
+    });
     
   }
 
-  getLevelResource2(levelKey: () => string | undefined): HttpResourceRef<Level> {
-    return httpResource<Level>(
-      () => !levelKey() ? undefined : ({
-        url: `/levels/${levelKey()}.json`,
-        headers: {
-          accept: 'application/json',
-        },
-        params: {
-          levelId: levelKey() ?? '',
-        },
-        method: 'GET',
-        body: null,
-        reportProgress: false,
-        transferCache: false,
-        withCredentials: false,
-      }),
-      { defaultValue: initLevel }
-    );
-  }
-
-  getLevelOverviewResource(): HttpResourceRef<LevelOverview> {
-    return httpResource<LevelOverview>(() => `/levels/overview.json`, {
+  getLevelOverviewResource(): ResourceRef<LevelOverview> {
+    return resource({
+      loader: () =>
+        Promise.resolve(toLevelOverview(embeddedAssets.levels['overview'])),
       defaultValue: initLevelOverview,
     });
   }

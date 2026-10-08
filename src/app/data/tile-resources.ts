@@ -1,10 +1,9 @@
-import { HttpResourceRef } from "@angular/common/http";
-import { computed, resource } from "@angular/core";
+import { computed, resource, ResourceRef } from "@angular/core";
 import { Style } from "../engine/palettes";
 import { extractTiles } from "../engine/tiles";
 
 export function createTilesResource(
-  tilesMapResource: HttpResourceRef<Blob | undefined>,
+  tilesMapResource: ResourceRef<Blob | undefined>,
   style: () => Style
 ) {
 
