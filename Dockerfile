@@ -1,7 +1,7 @@
 FROM ubuntu:22.04 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG NODE_VERSION=22.11.0
+ARG NODE_VERSION=22.16.0
 
 ENV TZ=Etc/UTC
 
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     default-jre \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js (Angular 19 needs >= 20.11 / 22)
+# Install Node.js (Angular 20 needs >= 20.19 / 22.12)
 RUN wget -nv -O /tmp/node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
     && tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 \
     && rm /tmp/node.tar.xz
@@ -56,8 +56,9 @@ RUN npm ci
 
 # Copy the rest of the source and build the Angular app.
 # --base-href ./ is required because the widget is served from the local file system.
+# Assets are embedded (scripts/embed-assets.mjs) so the game works from file://.
 COPY --chown=mario . .
-RUN npx ng build --configuration production --base-href ./
+RUN node scripts/embed-assets.mjs && npx ng build --configuration production --base-href ./
 
 # ngMario ships no Tizen widget wrapper; config.xml and icon.png live in res/
 # Angular's output dir (dist/<project>/browser) is detected via its index.html

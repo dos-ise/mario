@@ -19,7 +19,6 @@ import { HttpProgressEvent } from '@angular/common/http';
 import { runHeroDemo } from '../engine/hero-demo';
 import { playLevel, renderLevel, stopGame } from '../engine/level';
 import { Style } from '../engine/palettes';
-import { config } from '../config';
 import { HeroMapLoader } from '../data/hero-map-loader';
 import { EnemiesMapLoader } from '../data/enemies-map-loader';
 import { BlurOnChangeDirective } from '../shared/blur-on-change.directive';

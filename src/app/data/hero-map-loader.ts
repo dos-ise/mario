@@ -1,13 +1,13 @@
-import { httpResource, HttpResourceRef } from '@angular/common/http';
+import { resource, ResourceRef } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { config } from '../config';
+import { dataUrlToBlob } from './data-url';
+import { embeddedAssets } from './embedded-assets';
 
 @Injectable({ providedIn: 'root' })
 export class HeroMapLoader {
-  getHeroMapResource(): HttpResourceRef<Blob | undefined> {
-    return httpResource.blob(() => ({
-      url: config.hero,
-      reportProgress: true,
-    }));
+  getHeroMapResource(): ResourceRef<Blob | undefined> {
+    return resource({
+      loader: () => dataUrlToBlob(embeddedAssets.hero),
+    });
   }
 }

@@ -1,9 +1,8 @@
-import { HttpResourceRef } from '@angular/common/http';
-import { computed, resource } from '@angular/core';
+import { computed, resource, ResourceRef } from '@angular/core';
 import { extractGumbaTiles } from '../engine/gumba-tiles';
 
 export function createEnemiesResource(
-  enemiesMapResource: HttpResourceRef<Blob | undefined>
+  enemiesMapResource: ResourceRef<Blob | undefined>
 ) {
   const params = computed(() => {
     const map = enemiesMapResource.value();

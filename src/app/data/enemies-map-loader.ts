@@ -1,12 +1,13 @@
-import { httpResource, HttpResourceRef } from '@angular/common/http';
+import { resource, ResourceRef } from '@angular/core';
 import { Injectable } from '@angular/core';
+import { dataUrlToBlob } from './data-url';
+import { embeddedAssets } from './embedded-assets';
 
 @Injectable({ providedIn: 'root' })
 export class EnemiesMapLoader {
-  getEnemiesMapResource(): HttpResourceRef<Blob | undefined> {
-    return httpResource.blob(() => ({
-      url: '/enemies.png',
-      reportProgress: true,
-    }));
+  getEnemiesMapResource(): ResourceRef<Blob | undefined> {
+    return resource({
+      loader: () => dataUrlToBlob(embeddedAssets.enemies),
+    });
   }
 }
